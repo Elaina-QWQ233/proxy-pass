@@ -1,14 +1,11 @@
-import com.github.jengelman.gradle.plugins.shadow.transformers.Log4j2PluginsCacheFileTransformer
-import groovy.util.Node
-
-description = "Proxy pass allows developers to MITM a vanilla client and server without modifying them."
-
 plugins {
-    id("eclipse")
-    id("java")
-    id("application")
-    alias(libs.plugins.shadow)
+    id("java-library")
+    alias(libs.plugins.lombok)
+    `maven-publish`
 }
+
+group = "org.cloudburstmc.proxypass"
+version = libs.versions.packaging.get()
 
 java {
     toolchain {
@@ -17,49 +14,48 @@ java {
 }
 
 repositories {
-    //mavenLocal()
+    mavenLocal()
     mavenCentral()
-    maven("https://repo.opencollab.dev/maven-snapshots")
     maven("https://repo.opencollab.dev/maven-releases")
+    maven("https://repo.opencollab.dev/maven-snapshots")
 }
 
 dependencies {
-    compileOnly(libs.lombok)
-    annotationProcessor(libs.lombok)
-    compileOnly(libs.jsr305)
-    compileOnly(libs.checker.qual)
-    implementation(libs.bedrock.codec) 
-    implementation(libs.bedrock.common)
-    implementation(libs.bedrock.connection)
-    implementation(libs.jackson.databind)
-    implementation(libs.jackson.dataformat.yaml)
-    implementation(libs.common)
-    implementation(libs.jansi)
-    implementation(libs.jline.reader)
-    implementation(libs.minecraftauth)
+    api(project(":network:transport-raknet"))
+    api(project(":protocol:bedrock-codec"))
+    api(project(":protocol:bedrock-connection"))
+    api(project(":protocol:common"))
+    api(libs.jackson.databind)
+    api(libs.jackson.dataformat.yaml)
+    api(libs.net.raphimc.minecraftauth)
+    api(platform(libs.log4j.bom))
+    api(libs.log4j.api)
+    api(libs.log4j.core)
+//    compileOnly(libs.lombok)
+//    annotationProcessor(libs.lombok)
+//    compileOnly(libs.jsr305)
+//    compileOnly(libs.checker.qual)
+//    implementation(libs.bedrock.codec)
+//    implementation(libs.bedrock.common)
+//    implementation(libs.bedrock.connection)
+//    implementation(libs.jackson.databind)
+//    implementation(libs.jackson.dataformat.yaml)
+//    implementation(libs.common)
+//    implementation(libs.jansi)
+//    implementation(libs.jline.reader)
+//    implementation(libs.minecraftauth)
 }
 
-application {
-    mainClass.set("org.cloudburstmc.proxypass.ProxyPass")
+tasks.create<Jar>("sourceJar") {
+    from(sourceSets["main"].allSource)
+    archiveClassifier = "sources"
 }
 
-tasks.shadowJar {
-    archiveClassifier.set("")
-    archiveVersion.set("")
-    transform(Log4j2PluginsCacheFileTransformer())
-}
-
-tasks.named<JavaExec>("run") {
-    workingDir = projectDir.resolve("run")
-    workingDir.mkdir()
-}
-
-listOf("distZip", "distTar", "startScripts").forEach { taskName ->
-    tasks.named(taskName) {
-        dependsOn("shadowJar")
+publishing {
+    publications {
+        create<MavenPublication>("App") {
+            from(components["java"])
+            artifact(tasks["sourceJar"])
+        }
     }
-}
-
-tasks.named("startShadowScripts") {
-    dependsOn("jar")
 }

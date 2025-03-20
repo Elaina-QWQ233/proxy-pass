@@ -3,7 +3,6 @@ package org.cloudburstmc.proxypass;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 import lombok.ToString;
-import org.cloudburstmc.proxypass.network.bedrock.util.LogTo;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -33,8 +32,6 @@ public class Configuration {
     private boolean loggingPackets = false;
     @JsonProperty("max-clients")
     private int maxClients = 0;
-    @JsonProperty("log-to")
-    private LogTo logTo = LogTo.FILE;
 
     @JsonProperty("ignored-packets")
     private Set<String> ignoredPackets = Collections.emptySet();

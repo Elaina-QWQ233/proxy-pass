@@ -1,7 +1,0 @@
-{
-    "[java]": {
-        "editor.defaultFormatter": "redhat.java"
-    },
-    "extensions.ignoreRecommendations": false,
-    "java.configuration.updateBuildConfiguration": "interactive"
-}

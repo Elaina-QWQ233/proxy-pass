@@ -201,7 +201,8 @@ public class ProxyPass {
                 .group(this.eventLoopGroup)
                 .channelFactory(RakChannelFactory.server(NioDatagramChannel.class))
                 .option(RakChannelOption.RAK_ADVERTISEMENT, ADVERTISEMENT.toByteBuf())
-                .option(RakChannelOption.RAK_IP_DONT_FRAGMENT, true)
+                .option(RakChannelOption.RAK_PACKET_LIMIT, Integer.MAX_VALUE)
+                .option(RakChannelOption.RAK_GLOBAL_PACKET_LIMIT, Integer.MAX_VALUE)
                 .childHandler(new BedrockChannelInitializer<ProxyServerSession>() {
 
                     @Override
@@ -228,12 +229,6 @@ public class ProxyPass {
                 .group(this.eventLoopGroup)
                 .channelFactory(RakChannelFactory.client(NioDatagramChannel.class))
                 .option(RakChannelOption.RAK_PROTOCOL_VERSION, ProxyPass.CODEC.getRaknetProtocolVersion())
-                .option(RakChannelOption.RAK_COMPATIBILITY_MODE, true)
-                .option(RakChannelOption.RAK_IP_DONT_FRAGMENT, true)
-                .option(RakChannelOption.RAK_MTU_SIZES, new Integer[]{1492, 1200, 576})
-                .option(RakChannelOption.RAK_CLIENT_INTERNAL_ADDRESSES, 20)
-                .option(RakChannelOption.RAK_TIME_BETWEEN_SEND_CONNECTION_ATTEMPTS_MS, 500)
-                .option(RakChannelOption.RAK_CLIENT_BEDROCK_PROTOCOL_VERSION, PROTOCOL_VERSION)
                 .handler(new BedrockChannelInitializer<ProxyClientSession>() {
 
                     @Override

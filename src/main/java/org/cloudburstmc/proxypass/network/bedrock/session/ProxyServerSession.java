@@ -33,9 +33,6 @@ public class ProxyServerSession extends BedrockServerSession implements ProxySes
     @Override
     protected void onPacket(BedrockPacketWrapper wrapper) {
         BedrockPacket packet = wrapper.getPacket();
-        if (player != null) {
-            player.logger.logPacket(this, packet, true);
-        }
 
         if (proxyPass.getConfiguration().isPacketTesting()) {
             TestUtils.testPacket(this, wrapper);

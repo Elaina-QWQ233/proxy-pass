@@ -4,7 +4,6 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.extern.log4j.Log4j2;
 import org.cloudburstmc.proxypass.ProxyPass;
-import org.cloudburstmc.proxypass.network.bedrock.logging.SessionLogger;
 
 import java.security.KeyPair;
 
@@ -20,8 +19,6 @@ public class ProxyPlayerSession {
     private final KeyPair proxyKeyPair;
     private volatile boolean closed = false;
 
-    public final SessionLogger logger;
-
     public ProxyPlayerSession(ProxyServerSession upstream, ProxyClientSession downstream, ProxyPass proxy, AuthData authData, KeyPair proxyKeyPair) {
         this.upstream = upstream;
         this.downstream = downstream;
@@ -33,12 +30,5 @@ public class ProxyPlayerSession {
 //                this.downstream.disconnect();
 //            }
 //        });
-        this.logger = new SessionLogger(
-                proxy,
-                proxy.getSessionsDir(),
-                this.authData.getDisplayName(),
-                timestamp
-        );
-        logger.start();
     }
 }

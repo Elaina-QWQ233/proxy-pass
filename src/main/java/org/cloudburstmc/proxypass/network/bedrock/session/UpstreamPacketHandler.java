@@ -104,7 +104,7 @@ public class UpstreamPacketHandler implements BedrockPacketHandler {
 
             if (account == null) {
                 this.authData = new AuthData(chain.identityClaims().extraData.displayName,
-                    chain.identityClaims().extraData.identity, chain.identityClaims().extraData.xuid);
+                        chain.identityClaims().extraData.identity, chain.identityClaims().extraData.xuid);
                 chainData = packet.getChain();
 
                 initializeOfflineProxySession();
@@ -129,11 +129,11 @@ public class UpstreamPacketHandler implements BedrockPacketHandler {
             this.session.setSendSession(downstream);
 
             ProxyPlayerSession proxySession = new ProxyPlayerSession(
-                this.session, 
-                downstream, 
-                this.proxy, 
-                this.authData, 
-                EncryptionUtils.createKeyPair());
+                    this.session,
+                    downstream,
+                    this.proxy,
+                    this.authData,
+                    EncryptionUtils.createKeyPair());
             this.player = proxySession;
 
             downstream.setPlayer(proxySession);
@@ -143,8 +143,6 @@ public class UpstreamPacketHandler implements BedrockPacketHandler {
                 String jwt = chainData.get(chainData.size() - 1);
                 JsonWebSignature jws = new JsonWebSignature();
                 jws.setCompactSerialization(jwt);
-                player.getLogger().saveJson("chainData", new JSONObject(JsonUtil.parseJson(jws.getUnverifiedPayload())));
-                player.getLogger().saveJson("skinData", this.skinData);
             } catch (Exception e) {
                 log.error("JSON output error: " + e.getMessage(), e);
             }
@@ -164,7 +162,6 @@ public class UpstreamPacketHandler implements BedrockPacketHandler {
             RequestNetworkSettingsPacket packet = new RequestNetworkSettingsPacket();
             packet.setProtocolVersion(ProxyPass.PROTOCOL_VERSION);
             downstream.sendPacketImmediately(packet);
-            this.player.logger.logPacket(this.session, packet, true);
 
             //SkinUtils.saveSkin(proxySession, this.skinData);
         });
@@ -190,23 +187,17 @@ public class UpstreamPacketHandler implements BedrockPacketHandler {
             this.session.setSendSession(downstream);
 
             ProxyPlayerSession proxySession = new ProxyPlayerSession(
-                this.session, 
-                downstream, 
-                this.proxy, 
-                this.authData, 
-                new KeyPair(mcChain.getPublicKey(), mcChain.getPrivateKey()));
+                    this.session,
+                    downstream,
+                    this.proxy,
+                    this.authData,
+                    new KeyPair(mcChain.getPublicKey(), mcChain.getPrivateKey()));
             this.player = proxySession;
 
             downstream.setPlayer(proxySession);
             this.session.setPlayer(proxySession);
 
             String skinData = ForgeryUtils.forgeOnlineSkinData(account, this.skinData, this.proxy.getTargetAddress());
-
-            try {
-                player.getLogger().saveJson("skinData", this.skinData);
-            } catch (Exception e) {
-                log.error("JSON output error: " + e.getMessage(), e);
-            }
 
             LoginPacket login = new LoginPacket();
             login.getChain().addAll(onlineLoginChain);
@@ -216,11 +207,9 @@ public class UpstreamPacketHandler implements BedrockPacketHandler {
             downstream.setPacketHandler(new DownstreamInitialPacketHandler(downstream, proxySession, this.proxy, login));
             downstream.setLogging(true);
 
-            // RequestNetworkSettingsPacket packet = new RequestNetworkSettingsPacket();
-            // packet.setProtocolVersion(ProxyPass.PROTOCOL_VERSION);
-            // downstream.sendPacketImmediately(packet);
-            // this.player.logger.logPacket(this.session, packet, true);
-
+            RequestNetworkSettingsPacket packet = new RequestNetworkSettingsPacket();
+            packet.setProtocolVersion(ProxyPass.PROTOCOL_VERSION);
+            downstream.sendPacketImmediately(packet);
             //SkinUtils.saveSkin(proxySession, this.skinData);
         });
     }
