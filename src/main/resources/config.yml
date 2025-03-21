@@ -5,7 +5,7 @@ proxy:
 ## Destination server which the client will connect to.
 ## You are only able to join offline mode servers
 destination:
-  host: play.lbsg.net
+  host: geo.hivebedrock.network
   port: 19132
 ## Run the proxy in online mode. This will require login with a Microsoft account on start.
 online-mode: true

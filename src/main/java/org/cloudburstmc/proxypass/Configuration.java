@@ -20,6 +20,7 @@ import java.util.Set;
 public class Configuration {
 
     private Address proxy;
+
     private Address destination;
 
     @JsonProperty("online-mode")

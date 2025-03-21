@@ -29,10 +29,14 @@ import org.cloudburstmc.protocol.bedrock.BedrockPeer;
 import org.cloudburstmc.protocol.bedrock.BedrockPong;
 import org.cloudburstmc.protocol.bedrock.codec.BedrockCodec;
 import org.cloudburstmc.protocol.bedrock.codec.BedrockCodecHelper;
+import org.cloudburstmc.protocol.bedrock.codec.v729.serializer.InventoryContentSerializer_v729;
+import org.cloudburstmc.protocol.bedrock.codec.v729.serializer.InventorySlotSerializer_v729;
 import org.cloudburstmc.protocol.bedrock.codec.v776.Bedrock_v776;
 import org.cloudburstmc.protocol.bedrock.data.EncodingSettings;
 import org.cloudburstmc.protocol.bedrock.data.definitions.BlockDefinition;
 import org.cloudburstmc.protocol.bedrock.netty.initializer.BedrockChannelInitializer;
+import org.cloudburstmc.protocol.bedrock.packet.InventoryContentPacket;
+import org.cloudburstmc.protocol.bedrock.packet.InventorySlotPacket;
 import org.cloudburstmc.protocol.common.DefinitionRegistry;
 import org.cloudburstmc.proxypass.network.bedrock.session.Account;
 import org.cloudburstmc.proxypass.network.bedrock.session.ProxyClientSession;
@@ -66,7 +70,11 @@ public class ProxyPass {
     public static final String MINECRAFT_VERSION;
     public static final BedrockCodecHelper HELPER = Bedrock_v776.CODEC.createHelper();
     public static final BedrockCodec CODEC = Bedrock_v776.CODEC
-        .toBuilder().helper(() -> HELPER).build();
+        .toBuilder()
+            .helper(() -> HELPER)
+            .updateSerializer(InventoryContentPacket.class, InventoryContentSerializer_v729.INSTANCE)
+            .updateSerializer(InventorySlotPacket.class, InventorySlotSerializer_v729.INSTANCE)
+            .build();
         
     public static final int PROTOCOL_VERSION = CODEC.getProtocolVersion();
     private static final BedrockPong ADVERTISEMENT = new BedrockPong()
